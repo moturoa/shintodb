@@ -4,6 +4,9 @@
 #' @description Checks whether a `config.yml` file is completely or partially encrypted.
 #' Returns TRUE when all `dbpassword` (or other `password_names`) entries are already encrypted,
 #' FALSE when one or more are not yet encrypted (with a message)
+#' @param file Path to config file (no default ued)
+#' @param password_names Field names in YAML with passwords (can be vector)
+#' @param secret The encryption secret
 #' @seealso \code{\link{encrypt_config_file}}
 #' @examples
 #' \dontrun{

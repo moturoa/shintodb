@@ -7,9 +7,10 @@ Maintainer: Remko Duursma <remko@shintolabs.nl>
 Description: Everything to work with PostgresDB in Shinto apps.
   Manage, encrypt, and decrypt config files. Database R6 layer with
   generic methods. Manage database connections automatically.
+Imports: DBI, R6, config, dbplyr, dplyr, glue, pool, safer, tictoc, yaml, lifecycle,
+  rstudioapi, RPostgres
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
-Imports: 
-    lifecycle
+RoxygenNote: 7.2.2
+License: GPL (>= 3)

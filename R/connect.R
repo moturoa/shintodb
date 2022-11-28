@@ -4,10 +4,13 @@
 #' @param what Which database connection in the config file? (Name of the block in the YAML)
 #' @param file Path to the config.yml file, or set global option `options(shintodb_config_file = /path/to/file)`
 #' @param pool Logical. When TRUE, uses [pool::dbPool()], otherwise [DBI::dbConnect()]
+#' @param config_entry Corresponds to `config` argument to [config::get()], no need to set usually
+#' as it is guessed from the environment variable R_CONFIG_ACTIVE
 #' @export
 #' @importFrom config get
 #' @importFrom DBI dbConnect
 #' @importFrom pool dbPool
+#' @importFrom RPostgres Postgres
 #' @importFrom glue glue
 connect <- function(what,
                     file = getOption("shintodb_config_file", "conf/config.yml"),

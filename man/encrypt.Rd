@@ -3,11 +3,14 @@
 \name{encrypt}
 \alias{encrypt}
 \alias{decrypt}
+\alias{string_is_encrypted}
 \title{Encrypt a password}
 \usage{
 encrypt(x, secret = Sys.getenv("SHINTO_PASS_SECRET"))
 
 decrypt(x, secret = Sys.getenv("SHINTO_PASS_SECRET"))
+
+string_is_encrypted(string, secret = Sys.getenv("SHINTO_PASS_SECRET"))
 }
 \arguments{
 \item{x}{A character string or character vector.}

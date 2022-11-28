@@ -40,9 +40,10 @@
 #' @param name Entry name in the config file
 #' @param dbname Database name
 #' @param dbuser User name. Default is database name.
+#' @param file Path to config file
 #' @param where Development or production. If developments, adds an entry block to both default and development.
 #' @param encrypt If TRUE, encrypts the config entry
-#' @param \dots Further arguments passed to `db_entry_list`
+#' @param ... Further arguments passed to `db_entry_list`
 #' @export
 #' @examples
 #' \dontrun{
@@ -121,12 +122,7 @@ read_config <- function(file){
 }
 
 
-#' Makes a config entry list
-#' @description Used by [add_config_entry()]. See there for help. This function is
-#' usually not needed by the user.
-#' @examples
-#' library(glue)
-#' db_entry_list("Waalre","wbm_waalre", infra = "dev2", local = FALSE)
+
 db_entry_list <- function(name, dbname, dbuser = dbname, infra = c("dev2","p2"),
                           local = FALSE, password = NULL, encrypt = FALSE){
 
@@ -141,7 +137,7 @@ db_entry_list <- function(name, dbname, dbuser = dbname, infra = c("dev2","p2"),
     password <- encrypt(password, secr)
   }
 
-  setNames(
+  stats::setNames(
     list(
       list(
         dbname = dbname,

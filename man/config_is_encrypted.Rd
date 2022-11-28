@@ -10,6 +10,13 @@ config_is_encrypted(
   secret = Sys.getenv("SHINTO_PASS_SECRET")
 )
 }
+\arguments{
+\item{file}{Path to config file (no default ued)}
+
+\item{password_names}{Field names in YAML with passwords (can be vector)}
+
+\item{secret}{The encryption secret}
+}
 \description{
 Checks whether a \code{config.yml} file is completely or partially encrypted.
 Returns TRUE when all \code{dbpassword} (or other \code{password_names}) entries are already encrypted,

@@ -21,11 +21,13 @@ add_config_entry(
 
 \item{dbuser}{User name. Default is database name.}
 
+\item{file}{Path to config file}
+
 \item{where}{Development or production. If developments, adds an entry block to both default and development.}
 
 \item{encrypt}{If TRUE, encrypts the config entry}
 
-\item{\dots}{Further arguments passed to \code{db_entry_list}}
+\item{...}{Further arguments passed to \code{db_entry_list}}
 }
 \description{
 Manage your DB config file with ease. Adds one or more config blocks,

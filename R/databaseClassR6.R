@@ -6,6 +6,7 @@
 #' @importFrom dbplyr in_schema
 #' @importFrom dplyr tbl left_join collect
 #' @importFrom tictoc tic toc
+#' @export
 # TODO
 # - test sqlite (or no schema)
 # - better logging ... cli?
@@ -15,28 +16,22 @@ databaseClass <- R6::R6Class(
 
   public = list(
 
-    #' @field con (`any`)\cr
-    #' Connection object
+    #' @field con Connection object
     con = NULL,
 
-    #' @field schema (`character()`)\cr
-    #' DB Schema
+    #' @field schema DB Schema
     schema = NULL,
 
-    #' @field dbname (`character()`)\cr
-    #' DB name
+    #' @field dbname DB name
     dbname = NULL,
 
-    #' @field dbuser (`character()`)\cr
-    #' DB user
+    #' @field dbuser DB user
     dbuser = NULL,
 
-    #' @field pool (`logical()`)\cr
-    #' Logical; whether we are connected with the `pool` package or not.
+    #' @field pool Logical; whether we are connected with the `pool` package or not.
     pool = NULL,
 
-    #' @field dbtype (`character()`)\cr
-    #' DB type; either 'postgres' or 'sqlite'
+    #' @field dbtype DB type; either 'postgres' or 'sqlite'
     dbtype = NULL,
 
     #' @description Make a new R6 object of class `database`
@@ -279,7 +274,7 @@ databaseClass <- R6::R6Class(
     },
 
     #' @description Run an SQL statement with [dbGetQuery()]
-    #' @param \dots Further arguments to `self$query`
+    #' @param ... Further arguments to `self$query`
     #' @details Query wrapped in `try`, for safety
     get_query = function(...){
       self$query(...)
@@ -365,7 +360,7 @@ databaseClass <- R6::R6Class(
 
 
     #' @description Synonym for [replace_value_where()]. See its help page.
-    #' @param \dots Further arguments passed to `replace_value_where`
+    #' @param ... Further arguments passed to `replace_value_where`
     update_where = function(...){
       self$replace_value_where(...)
     },

@@ -21,23 +21,17 @@ replace_value_where("table", 'verwijderd', 'true', 'naam', 'gekozennaam')
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{con}}{(\code{any})\cr
-Connection object}
+\item{\code{con}}{Connection object}
 
-\item{\code{schema}}{(\code{character()})\cr
-DB Schema}
+\item{\code{schema}}{DB Schema}
 
-\item{\code{dbname}}{(\code{character()})\cr
-DB name}
+\item{\code{dbname}}{DB name}
 
-\item{\code{dbuser}}{(\code{character()})\cr
-DB user}
+\item{\code{dbuser}}{DB user}
 
-\item{\code{pool}}{(\code{logical()})\cr
-Logical; whether we are connected with the \code{pool} package or not.}
+\item{\code{pool}}{Logical; whether we are connected with the \code{pool} package or not.}
 
-\item{\code{dbtype}}{(\code{character()})\cr
-DB type; either 'postgres' or 'sqlite'}
+\item{\code{dbtype}}{DB type; either 'postgres' or 'sqlite'}
 }
 \if{html}{\out{</div>}}
 }
@@ -279,7 +273,7 @@ Run an SQL statement with \code{\link[=dbGetQuery]{dbGetQuery()}}
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{\dots}}{Further arguments to \code{self$query}}
+\item{\code{...}}{Further arguments to \code{self$query}}
 }
 \if{html}{\out{</div>}}
 }
@@ -388,7 +382,7 @@ Synonym for \code{\link[=replace_value_where]{replace_value_where()}}. See its h
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{\dots}}{Further arguments passed to \code{replace_value_where}}
+\item{\code{...}}{Further arguments passed to \code{replace_value_where}}
 }
 \if{html}{\out{</div>}}
 }
