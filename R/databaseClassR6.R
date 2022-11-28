@@ -5,7 +5,6 @@
 #' @importFrom pool dbPool poolClose
 #' @importFrom dbplyr in_schema
 #' @importFrom dplyr tbl left_join collect
-#' @importFrom tictoc tic toc
 #' @export
 # TODO
 # - test sqlite (or no schema)
@@ -47,9 +46,12 @@ databaseClass <- R6::R6Class(
                           pool = TRUE,
                           connect_on_init = TRUE){
 
-      tictoc::tic("WBM R6 init.")
-
       if(connect_on_init){
+
+        if(is.null(schema)){
+          warning("No schema set in shintodb database layer - are you sure??")
+        }
+
         self$connect_to_database(config_file, schema, what, pool)
       }
 
@@ -94,42 +96,15 @@ databaseClass <- R6::R6Class(
         self$pool <- pool
 
         cf <- config::get(what, file = config_file)
-
-        print("----CONNECTING TO----")
-        print(cf$dbhost)
-
         self$dbuser <- cf$dbuser
 
-        # passw <- cf$dbpassword
-        # if(string_is_encrypted(passw)){
-        #   passw <- decrypt(passw)
-        # }
-
-        if(pool){
-          flog.info("pool::dbPool", name = "DBR6")
-          response <- try(pool::dbPool(RPostgres::Postgres(),
-                                       dbname = cf$dbname,
-                                       host = cf$dbhost,
-                                       port = cf$dbport,
-                                       user = cf$dbuser,
-                                       password = cf$dbpassword,
-                                       minSize = 1,
-                                       maxSize = 25,
-                                       idleTimeout = 60*60*1000))
-        } else {
-          flog.info("DBI::dbConnect", name = "DBR6")
-          response <- try(DBI::dbConnect(RPostgres::Postgres(),
-                                         dbname = cf$dbname,
-                                         host = cf$dbhost,
-                                         port = cf$dbport,
-                                         user = cf$dbuser,
-                                         password = cf$dbpassword))
-        }
+        response <- try(
+          shintodb::connect(what, config_file, pool)
+        )
 
         if(!inherits(response, "try-error")){
           self$con <- response
         }
-
 
         self$dbtype <- "postgres"
 
@@ -144,17 +119,17 @@ databaseClass <- R6::R6Class(
       if(!is.null(self$con) && dbIsValid(self$con)){
 
         if(self$pool){
-          flog.info("poolClose", name = "DBR6")
+          #flog.info("poolClose", name = "DBR6")
 
           poolClose(self$con)
         } else {
-          flog.info("dbDisconnect", name = "DBR6")
+          #flog.info("dbDisconnect", name = "DBR6")
 
-          dbDisconnect(self$con)
+          DBI::dbDisconnect(self$con)
         }
 
       } else {
-        flog.info("Not closing an invalid or null connection", name = "DBR6")
+        #flog.info("Not closing an invalid or null connection", name = "DBR6")
       }
     },
 
@@ -232,7 +207,7 @@ databaseClass <- R6::R6Class(
     append_data = function(table, data){
 
 
-      flog.info(glue("append {nrow(data)} rows to '{table}'"), name = "DBR6")
+      #flog.info(glue("append {nrow(data)} rows to '{table}'"), name = "DBR6")
 
       if(!is.null(self$schema)){
         tm <- try(
@@ -263,9 +238,9 @@ databaseClass <- R6::R6Class(
     query = function(txt, glue = TRUE, quiet = FALSE){
 
       if(glue)txt <- glue::glue(txt)
-      if(!quiet){
-        flog.info(glue("query({txt})"), name = "DBR6")
-      }
+      # if(!quiet){
+      #   flog.info(glue("query({txt})"), name = "DBR6")
+      # }
 
       try(
         dbGetQuery(self$con, txt)
@@ -288,7 +263,7 @@ databaseClass <- R6::R6Class(
 
       if(glue)txt <- glue::glue(txt)
 
-      flog.info(glue("query({txt})"), name = "DBR6")
+      #flog.info(glue("query({txt})"), name = "DBR6")
 
       try(
         dbExecute(self$con, txt)
@@ -348,9 +323,9 @@ databaseClass <- R6::R6Class(
 
       if(query_only)return(query)
 
-      if(!quiet){
-        flog.info(query, name = "DBR6")
-      }
+      # if(!quiet){
+      #   flog.info(query, name = "DBR6")
+      # }
 
 
       dbExecute(self$con, query)
@@ -395,7 +370,7 @@ databaseClass <- R6::R6Class(
                               val_compare1 = val_compare1,
                               val_compare2 = val_compare2)
 
-      futile.logger::flog.info(glue("replace_value_where2({query})"), name = "DBR6")
+      #futile.logger::flog.info(glue("replace_value_where2({query})"), name = "DBR6")
 
       DBI::dbExecute(self$con, query)
 
@@ -417,7 +392,7 @@ databaseClass <- R6::R6Class(
                     "where table_schema = '{self$schema}' and ",
                     "table_name = '{table}'")
 
-      flog.info(query, name = "DBR6")
+      #flog.info(query, name = "DBR6")
 
       try(
         DBI::dbGetQuery(self$con, query)
@@ -437,7 +412,7 @@ databaseClass <- R6::R6Class(
         query <- glue::glue("select * from {table} where false")
       }
 
-      flog.info(query, name = "DBR6")
+      #flog.info(query, name = "DBR6")
 
       out <- DBI::dbGetQuery(self$con, query)
 
@@ -463,7 +438,7 @@ databaseClass <- R6::R6Class(
       }
 
       query <- DBI::sqlInterpolate(DBI::ANSI(), query, val = val_compare)
-      flog.info(query, name = "DBR6")
+      #flog.info(query, name = "DBR6")
 
       try(
         dbExecute(self$con, query)
