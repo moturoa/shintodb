@@ -49,7 +49,7 @@ databaseClass <- R6::R6Class(
       if(connect_on_init){
 
         if(is.null(schema)){
-          warning("No schema set in shintodb database layer - are you sure??")
+          schema <- "public"
         }
 
         self$connect_to_database(config_file, schema, what, pool)
