@@ -11,7 +11,7 @@
 # - better logging ... cli?
 # - optional printing (turn on/off on initialize)
 # - optional timing (turn on/off)
-databaseClass <- R6::R6Class(
+databaseClass <- R6::R6Class(lock_objects = FALSE,
 
   public = list(
 
@@ -44,7 +44,9 @@ databaseClass <- R6::R6Class(
                           what,
                           schema = NULL,
                           pool = TRUE,
-                          connect_on_init = TRUE){
+                          connect_on_init = TRUE,
+                          log_level = c("all","none")
+                          ){
 
       if(connect_on_init){
 
@@ -54,6 +56,8 @@ databaseClass <- R6::R6Class(
 
         self$connect_to_database(config_file, schema, what, pool)
       }
+
+      self$log_level <- match.arg(log_level)
 
 
     },
@@ -119,17 +123,15 @@ databaseClass <- R6::R6Class(
       if(!is.null(self$con) && dbIsValid(self$con)){
 
         if(self$pool){
-          #flog.info("poolClose", name = "DBR6")
-
-          poolClose(self$con)
+          private$log("poolClose")
+          pool::poolClose(self$con)
         } else {
-          #flog.info("dbDisconnect", name = "DBR6")
-
+          private$log("dbDisconnect")
           DBI::dbDisconnect(self$con)
         }
 
       } else {
-        #flog.info("Not closing an invalid or null connection", name = "DBR6")
+         private$log("Not closing an invalid or null connection")
       }
     },
 
@@ -137,9 +139,10 @@ databaseClass <- R6::R6Class(
     list_tables = function(){
 
       if(self$dbtype == "postgres"){
-        DBI::dbGetQuery(self$con,
-                        glue("SELECT table_name FROM information_schema.tables
-                   WHERE table_schema='{self$schema}'"))
+        query <- glue::glue("SELECT table_name FROM information_schema.tables WHERE table_schema='{self$schema}'")
+
+        self$query(query)
+
       } else {
         DBI::dbListTables(self$con)  # no schema in sqlite
       }
@@ -152,14 +155,14 @@ databaseClass <- R6::R6Class(
     #' @return Logical
     have_column = function(table, column){
 
-      qu <- glue::glue(
+      query <- glue::glue(
         "SELECT EXISTS (SELECT 1
                      FROM information_schema.columns
                      WHERE table_schema='{self$schema}' AND table_name='{table}' AND column_name='{column}');"
       )
 
-      dbGetQuery(self$con, qu)$exists
-
+      out <- self$query(query)
+      out$exists
     },
 
 
@@ -170,7 +173,7 @@ databaseClass <- R6::R6Class(
     make_column = function(table, column, type = "varchar"){
 
       qu <- glue::glue("alter table {self$schema}.{table} add column {column} {type}")
-      dbExecute(self$con, qu)
+      self$execute_query(qu)
 
     },
 
@@ -189,9 +192,11 @@ databaseClass <- R6::R6Class(
         out <- dplyr::tbl(self$con, table)
       }
 
-
       if(!lazy){
         out <- dplyr::collect(out)
+
+        private$write_output_log(what = glue::glue("Read table: {table}"),
+                                 data = out)
       }
 
       out
@@ -205,9 +210,6 @@ databaseClass <- R6::R6Class(
     #' It will fail when `data` has columns that do not exist in `table`, or are of
     #' incompatible type.
     append_data = function(table, data){
-
-
-      #flog.info(glue("append {nrow(data)} rows to '{table}'"), name = "DBR6")
 
       if(!is.null(self$schema)){
         tm <- try(
@@ -226,6 +228,8 @@ databaseClass <- R6::R6Class(
 
       }
 
+      private$log(glue::glue("Append {nrow(data)} rows to '{table}'"))
+
       return(invisible(!inherits(tm, "try-error")))
 
     },
@@ -234,17 +238,15 @@ databaseClass <- R6::R6Class(
     #' @param txt SQL query
     #' @param glue If TRUE, can `glue` the SQL query
     #' @details Query wrapped in `try`, for safety
-    #' @param quiet If TRUE, no printing (TODO global!)
-    query = function(txt, glue = TRUE, quiet = FALSE){
+    query = function(txt, glue = FALSE){
 
       if(glue)txt <- glue::glue(txt)
-      # if(!quiet){
-      #   flog.info(glue("query({txt})"), name = "DBR6")
-      # }
 
-      try(
-        dbGetQuery(self$con, txt)
+      out <- try(
+        DBI::dbGetQuery(self$con, txt)
       )
+
+      private$write_output_log(query = txt, data = out)
 
     },
 
@@ -259,14 +261,14 @@ databaseClass <- R6::R6Class(
     #' @description Run an SQL statement with [dbExecute()]
     #' @param txt SQL query ("alter table" type commands)
     #' @param glue If TRUE, `glue`s the query
-    execute_query = function(txt, glue = TRUE){
+    execute_query = function(txt, glue = FALSE){
 
       if(glue)txt <- glue::glue(txt)
 
-      #flog.info(glue("query({txt})"), name = "DBR6")
+      private$write_output_log(query = txt)
 
       try(
-        dbExecute(self$con, txt)
+        DBI::dbExecute(self$con, txt)
       )
 
     },
@@ -277,11 +279,9 @@ databaseClass <- R6::R6Class(
     #' @param value Value
     has_value = function(table, column, value){
 
-      if(!is.null(self$schema)){
-        out <- self$query(glue("select {column} from {self$schema}.{table} where {column} = '{value}' limit 1"))
-      } else {
-        out <- self$query(glue("select {column} from {table} where {column} = '{value}' limit 1"))
-      }
+      query <- glue::glue("select {column} from {self$schema}.{table} where {column} = '{value}' limit 1")
+
+      out <- self$query(query)
 
       nrow(out) > 0
     },
@@ -309,13 +309,8 @@ databaseClass <- R6::R6Class(
         val_replace <- tolower(as.character(val_replace))
       }
 
-      if(!is.null(self$schema)){
-        query <- glue("update {self$schema}.{table} set {col_replace} = ?val_replace where ",
-                      "{col_compare} = ?val_compare") %>% as.character()
-      } else {
-        query <- glue("update {table} set {col_replace} = ?val_replace where ",
-                      "{col_compare} = ?val_compare") %>% as.character()
-      }
+      query <- glue::glue("update {self$schema}.{table} set {col_replace} = ?val_replace where",
+                          " {col_compare} = ?val_compare") %>% as.character()
 
       query <- sqlInterpolate(DBI::ANSI(),
                               query,
@@ -323,12 +318,7 @@ databaseClass <- R6::R6Class(
 
       if(query_only)return(query)
 
-      # if(!quiet){
-      #   flog.info(query, name = "DBR6")
-      # }
-
-
-      dbExecute(self$con, query)
+      self$execute_query(query)
 
 
     },
@@ -370,9 +360,7 @@ databaseClass <- R6::R6Class(
                               val_compare1 = val_compare1,
                               val_compare2 = val_compare2)
 
-      #futile.logger::flog.info(glue("replace_value_where2({query})"), name = "DBR6")
-
-      DBI::dbExecute(self$con, query)
+      self$execute_query(query)
 
 
     },
@@ -392,11 +380,7 @@ databaseClass <- R6::R6Class(
                     "where table_schema = '{self$schema}' and ",
                     "table_name = '{table}'")
 
-      #flog.info(query, name = "DBR6")
-
-      try(
-        DBI::dbGetQuery(self$con, query)
-      )
+      self$query(query)
 
     },
 
@@ -406,15 +390,9 @@ databaseClass <- R6::R6Class(
     #' a vector of table column names,
     table_columns = function(table, empty_table = FALSE){
 
-      if(!is.null(self$schema)){
-        query <- glue::glue("select * from {self$schema}.{table} where false")
-      } else {
-        query <- glue::glue("select * from {table} where false")
-      }
+      query <- glue::glue("select * from {self$schema}.{table} where false")
 
-      #flog.info(query, name = "DBR6")
-
-      out <- DBI::dbGetQuery(self$con, query)
+      out <- self$query(query)
 
       if(empty_table){
         return(out)
@@ -431,20 +409,15 @@ databaseClass <- R6::R6Class(
     #' @details Do not use inside shiny apps or otherwise, only as a tool to clean up tables.
     delete_rows_where = function(table, col_compare, val_compare){
 
-      if(!is.null(self$schema)){
-        query <- glue("delete from {self$schema}.{table} where {col_compare}= ?val")
-      } else {
-        query <- glue("delete from {table} where {col_compare}= ?val")
-      }
-
+      query <- glue("delete from {self$schema}.{table} where {col_compare}= ?val")
       query <- DBI::sqlInterpolate(DBI::ANSI(), query, val = val_compare)
-      #flog.info(query, name = "DBR6")
 
-      try(
-        dbExecute(self$con, query)
-      )
+      self$execute_query(query)
 
-    },
+    }
+  ),
+
+  private = list(
 
     #' @description Make a SQL representation of a vector
     #' @param x Vector
@@ -455,6 +428,31 @@ databaseClass <- R6::R6Class(
           paste(x, collapse="','"),
           "')"
         )
+
+    },
+
+
+    log = function(...){
+
+      if(self$log_level == "all"){
+        futile.logger::flog.info(..., name = "DBR6")
+      }
+
+    },
+
+    write_output_log = function(what = NULL, query, data = NULL){
+
+      if(!is.null(what)){
+        private$log(what)
+      }
+
+      if(!is.null(query)){
+        private$log(query)
+      }
+
+      if(!is.null(data)){
+        private$log(glue::glue("Downloaded table of size : {nrow(data)} rows, {ncol(data)} columns"))
+      }
 
     }
 
