@@ -5,6 +5,7 @@
 #' @param file Path to config.yml file
 #' @param file_out Path to output file (can be same as `file`)
 #' @param password_names Names (can be vector) of fields to be encrypted. Shinto default is `dbpassword`
+#' @param secret Symmetric encryption secret, read from environ. var. `SHINTO_PASS_SECRET` if not set
 #' @export
 # @param config_block Keep only these blocks (e.g. 'default', 'development' etc.)
 decrypt_config_file <- function(file, file_out,

@@ -44,9 +44,9 @@ decrypt <- function(x, secret = Sys.getenv("SHINTO_PASS_SECRET")){
 
 #' @export
 #' @rdname encrypt
-string_is_encrypted <- function(string, secret = Sys.getenv("SHINTO_PASS_SECRET")){
+string_is_encrypted <- function(x, secret = Sys.getenv("SHINTO_PASS_SECRET")){
   if(secret == "")return(FALSE)
-  !is.na(decrypt(string, secret = secret))
+  !is.na(decrypt(x, secret = secret))
 }
 
 

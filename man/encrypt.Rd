@@ -10,7 +10,7 @@ encrypt(x, secret = Sys.getenv("SHINTO_PASS_SECRET"))
 
 decrypt(x, secret = Sys.getenv("SHINTO_PASS_SECRET"))
 
-string_is_encrypted(string, secret = Sys.getenv("SHINTO_PASS_SECRET"))
+string_is_encrypted(x, secret = Sys.getenv("SHINTO_PASS_SECRET"))
 }
 \arguments{
 \item{x}{A character string or character vector.}

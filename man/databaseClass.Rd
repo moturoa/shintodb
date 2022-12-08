@@ -56,7 +56,6 @@ replace_value_where("table", 'verwijderd', 'true', 'naam', 'gekozennaam')
 \item \href{#method-NA-table_info}{\code{databaseClass$table_info()}}
 \item \href{#method-NA-table_columns}{\code{databaseClass$table_columns()}}
 \item \href{#method-NA-delete_rows_where}{\code{databaseClass$delete_rows_where()}}
-\item \href{#method-NA-to_sql_string}{\code{databaseClass$to_sql_string()}}
 \item \href{#method-unknown-clone}{\code{databaseClass$clone()}}
 }
 }
@@ -71,7 +70,8 @@ Make a new R6 object of class \code{database}
   what,
   schema = NULL,
   pool = TRUE,
-  connect_on_init = TRUE
+  connect_on_init = TRUE,
+  log_level = c("all", "none")
 )}\if{html}{\out{</div>}}
 }
 
@@ -88,6 +88,8 @@ Make a new R6 object of class \code{database}
 
 \item{\code{connect_on_init}}{Whether to immediately make a DB connection when
 making this object}
+
+\item{\code{log_level}}{Either 'all' (all logging) or 'none'.}
 }
 \if{html}{\out{</div>}}
 }
@@ -242,7 +244,7 @@ incompatible type.
 \subsection{Method \code{query()}}{
 Run an SQL statement with \code{\link[=dbGetQuery]{dbGetQuery()}}
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{databaseClass$query(txt, glue = TRUE, quiet = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{databaseClass$query(txt, glue = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -251,8 +253,6 @@ Run an SQL statement with \code{\link[=dbGetQuery]{dbGetQuery()}}
 \item{\code{txt}}{SQL query}
 
 \item{\code{glue}}{If TRUE, can \code{glue} the SQL query}
-
-\item{\code{quiet}}{If TRUE, no printing (TODO global!)}
 }
 \if{html}{\out{</div>}}
 }
@@ -288,7 +288,7 @@ Query wrapped in \code{try}, for safety
 \subsection{Method \code{execute_query()}}{
 Run an SQL statement with \code{\link[=dbExecute]{dbExecute()}}
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{databaseClass$execute_query(txt, glue = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{databaseClass$execute_query(txt, glue = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -344,7 +344,7 @@ Update a value in a table given a single logical condition
 \describe{
 \item{\code{table}}{Table name}
 
-\item{\code{col_replace}}{Column name where to update value(s)}
+\item{\code{col_replace}}{Column name where to update values}
 
 \item{\code{val_replace}}{Value to enter in updated cells}
 
@@ -374,7 +374,7 @@ replace_value_where("table", 'verwijderd', 'true', 'naam', 'gekozennaam')
 \if{html}{\out{<a id="method-NA-update_where"></a>}}
 \if{latex}{\out{\hypertarget{method-NA-update_where}{}}}
 \subsection{Method \code{update_where()}}{
-Synonym for \code{\link[=replace_value_where]{replace_value_where()}}. See its help page.
+Synonym for \verb{$replace_value_where}. See its help page.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{databaseClass$update_where(...)}\if{html}{\out{</div>}}
 }
@@ -489,23 +489,6 @@ Delete rows from a table given a single logical condition
 Do not use inside shiny apps or otherwise, only as a tool to clean up tables.
 }
 
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-NA-to_sql_string"></a>}}
-\if{latex}{\out{\hypertarget{method-NA-to_sql_string}{}}}
-\subsection{Method \code{to_sql_string()}}{
-Make a SQL representation of a vector
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{databaseClass$to_sql_string(x)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{x}}{Vector}
-}
-\if{html}{\out{</div>}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-unknown-clone"></a>}}

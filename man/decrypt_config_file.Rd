@@ -16,6 +16,8 @@ decrypt_config_file(
 
 \item{file_out}{Path to output file (can be same as \code{file})}
 
+\item{secret}{Symmetric encryption secret, read from environ. var. \code{SHINTO_PASS_SECRET} if not set}
+
 \item{password_names}{Names (can be vector) of fields to be encrypted. Shinto default is \code{dbpassword}}
 }
 \description{

@@ -40,6 +40,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @param pool Logical; use [dbPool()] or not.
     #' @param connect_on_init Whether to immediately make a DB connection when
     #' making this object
+    #' @param log_level Either 'all' (all logging) or 'none'.
     initialize = function(config_file = "conf/config.yml",
                           what,
                           schema = NULL,
@@ -289,7 +290,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
     #' @description Update a value in a table given a single logical condition
     #' @param table Table name
-    #' @param col_replace Column name where to update value(s)
+    #' @param col_replace Column name where to update values
     #' @param val_replace Value to enter in updated cells
     #' @param col_compare Column used to select rows for updating
     #' @param val_compare Value in `col_compare` used to select rows for updating
@@ -324,7 +325,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     },
 
 
-    #' @description Synonym for [replace_value_where()]. See its help page.
+    #' @description Synonym for `$replace_value_where`. See its help page.
     #' @param ... Further arguments passed to `replace_value_where`
     update_where = function(...){
       self$replace_value_where(...)
@@ -431,7 +432,6 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
     },
 
-
     log = function(...){
 
       if(self$log_level == "all"){
@@ -459,5 +459,6 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
   )
 
 
-
 )
+
+
