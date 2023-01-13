@@ -5,6 +5,7 @@
 #' @importFrom pool dbPool poolClose
 #' @importFrom dbplyr in_schema
 #' @importFrom dplyr tbl left_join collect
+#' @importFrom DBI dbWriteTable dbGetQuery dbExecute Id
 #' @export
 # TODO
 # - test sqlite (or no schema)
@@ -214,14 +215,14 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
       if(!is.null(self$schema)){
         tm <- try(
-          dbWriteTable(self$con,
-                       name = Id(schema = self$schema, table = table),
+          DBI::dbWriteTable(self$con,
+                       name = DBI::Id(schema = self$schema, table = table),
                        value = data,
                        append = TRUE)
         )
       } else {
         tm <- try(
-          dbWriteTable(self$con,
+          DBI::dbWriteTable(self$con,
                        name = table,
                        value = data,
                        append = TRUE)
@@ -230,6 +231,35 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
       }
 
       private$log(glue::glue("Append {nrow(data)} rows to '{table}'"))
+
+      return(invisible(!inherits(tm, "try-error")))
+
+    },
+
+    #' @description Write a table with overwrite = TRUE
+    #' @param table Table name
+    #' @param data Dataframe
+    #' @details Be vary careful. Also, if there were indexes, you have to reset them.
+    write_table_overwrite = function(table, data){
+
+      if(!is.null(self$schema)){
+        tm <- try(
+          dbWriteTable(self$con,
+                       name = DBI::Id(schema = self$schema, table = table),
+                       value = data,
+                       overwrite = TRUE)
+        )
+      } else {
+        tm <- try(
+          dbWriteTable(self$con,
+                       name = table,
+                       value = data,
+                       overwrite = TRUE)
+        )
+
+      }
+
+      private$log(glue::glue("Written {nrow(data)} rows to '{table}'"))
 
       return(invisible(!inherits(tm, "try-error")))
 
@@ -248,6 +278,8 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
       )
 
       private$write_output_log(query = txt, data = out)
+
+      out
 
     },
 
@@ -440,7 +472,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
     },
 
-    write_output_log = function(what = NULL, query, data = NULL){
+    write_output_log = function(what = NULL, query = NULL, data = NULL){
 
       if(!is.null(what)){
         private$log(what)

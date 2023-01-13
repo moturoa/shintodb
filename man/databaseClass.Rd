@@ -46,6 +46,7 @@ replace_value_where("table", 'verwijderd', 'true', 'naam', 'gekozennaam')
 \item \href{#method-NA-make_column}{\code{databaseClass$make_column()}}
 \item \href{#method-NA-read_table}{\code{databaseClass$read_table()}}
 \item \href{#method-NA-append_data}{\code{databaseClass$append_data()}}
+\item \href{#method-NA-write_table_overwrite}{\code{databaseClass$write_table_overwrite()}}
 \item \href{#method-NA-query}{\code{databaseClass$query()}}
 \item \href{#method-NA-get_query}{\code{databaseClass$get_query()}}
 \item \href{#method-NA-execute_query}{\code{databaseClass$execute_query()}}
@@ -235,6 +236,29 @@ Append rows to an existing table
 Wrapped in a \code{try}, so will not stop the application if this operation fails.
 It will fail when \code{data} has columns that do not exist in \code{table}, or are of
 incompatible type.
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-NA-write_table_overwrite"></a>}}
+\if{latex}{\out{\hypertarget{method-NA-write_table_overwrite}{}}}
+\subsection{Method \code{write_table_overwrite()}}{
+Write a table with overwrite = TRUE
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{databaseClass$write_table_overwrite(table, data)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{table}}{Table name}
+
+\item{\code{data}}{Dataframe}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+Be vary careful. Also, if there were indexes, you have to reset them.
 }
 
 }
