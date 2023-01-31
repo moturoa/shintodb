@@ -5,7 +5,7 @@
 #' @importFrom pool dbPool poolClose
 #' @importFrom dbplyr in_schema
 #' @importFrom dplyr tbl left_join collect
-#' @importFrom DBI dbWriteTable dbGetQuery dbExecute Id
+#' @importFrom DBI dbWriteTable dbGetQuery dbExecute Id dbIsValid
 #' @export
 # TODO
 # - test sqlite (or no schema)
@@ -122,7 +122,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @description Close DB connection.
     close = function(){
 
-      if(!is.null(self$con) && dbIsValid(self$con)){
+      if(!is.null(self$con) && DBI::dbIsValid(self$con)){
 
         if(self$pool){
           private$log("poolClose")
