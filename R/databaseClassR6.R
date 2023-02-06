@@ -7,11 +7,6 @@
 #' @importFrom dplyr tbl left_join collect
 #' @importFrom DBI dbWriteTable dbGetQuery dbExecute Id dbIsValid
 #' @export
-# TODO
-# - test sqlite (or no schema)
-# - better logging ... cli?
-# - optional printing (turn on/off on initialize)
-# - optional timing (turn on/off)
 databaseClass <- R6::R6Class(lock_objects = FALSE,
 
   public = list(
@@ -100,6 +95,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
         self$schema <- schema
         self$dbname <- what
         self$pool <- pool
+        self$dbtype <- "postgres"
 
         cf <- config::get(what, file = config_file)
         self$dbuser <- cf$dbuser
@@ -111,8 +107,6 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
         if(!inherits(response, "try-error")){
           self$con <- response
         }
-
-        self$dbtype <- "postgres"
 
       }
 

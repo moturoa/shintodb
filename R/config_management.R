@@ -98,6 +98,24 @@ add_config_entry <- function(name, dbname,  dbuser = dbname,
 
 
 
+#' Make config file
+#' @description If we don't have `conf/config.yml` yet, generate it  (empty).
+#' @export
+make_config <- function(){
+
+  dir.create("conf", showWarnings = FALSE)
+
+  fn <- "conf/config.yml" # hardcoded
+  if(!file.exists(fn)){
+    writeLines("", fn)
+  } else {
+    message("Ignored, already exists.")
+  }
+
+}
+
+
+
 
 
 #=------- Utils
