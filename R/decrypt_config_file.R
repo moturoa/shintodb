@@ -39,8 +39,8 @@ decrypt_config_file <- function(file, file_out,
         if(length(ind) > 0){
           pass <- cfg[[i]][[k]][[ind]]
 
-          if(!string_is_encrypted(pass)){
-            message(paste("Password for",names(x)[k],"not encrypted, skipping"))
+          if(!isTRUE(string_is_encrypted(pass))){
+            message(paste("Password for",names(x)[k],"not encrypted or corrupt, skipping"))
           }
 
           cfg[[i]][[k]][[ind]] <- decrypt(pass, secret = secret)

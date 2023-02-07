@@ -5,9 +5,9 @@
 \title{Encrypts a config file}
 \usage{
 encrypt_config_file(
-  file,
+  file = "conf/config.yml",
   secret = Sys.getenv("SHINTO_PASS_SECRET"),
-  suffix = ".encrypted",
+  suffix = "",
   password_names = "dbpassword"
 )
 }

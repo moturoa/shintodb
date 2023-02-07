@@ -14,9 +14,9 @@
 #' Sys.setenv(SHINTO_PASS_SECRET = "mysecret")
 #' encrypt_config_file("config.yml")
 #' }
-encrypt_config_file <- function(file,
+encrypt_config_file <- function(file = "conf/config.yml",
                                 secret = Sys.getenv("SHINTO_PASS_SECRET"),
-                                suffix = ".encrypted",
+                                suffix = "",
                                 password_names = "dbpassword"){
 
   out_file <- paste0(file, suffix)
