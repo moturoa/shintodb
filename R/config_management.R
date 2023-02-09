@@ -240,13 +240,12 @@ get_host <- function(infra = c("dev2","p2","eindhoven_premium"), local = FALSE){
 
 }
 
-get_dbuser <- function(dbuser, ...){
+get_dbuser <- function(dbuser, infra, local){
 
-  paste0(dbuser, "@", get_host(...))
+  # local=FALSE omdat de db user altijd de azure host heeft (dus niet @localhost)
+  paste0(dbuser, "@", get_host(infra, local = FALSE))
 
 }
-
-
 
 
 

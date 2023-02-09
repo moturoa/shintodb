@@ -40,6 +40,7 @@ replace_value_where("table", 'verwijderd', 'true', 'naam', 'gekozennaam')
 \itemize{
 \item \href{#method-NA-new}{\code{databaseClass$new()}}
 \item \href{#method-NA-connect_to_database}{\code{databaseClass$connect_to_database()}}
+\item \href{#method-NA-postgres_now}{\code{databaseClass$postgres_now()}}
 \item \href{#method-NA-close}{\code{databaseClass$close()}}
 \item \href{#method-NA-list_tables}{\code{databaseClass$list_tables()}}
 \item \href{#method-NA-have_column}{\code{databaseClass$have_column()}}
@@ -102,7 +103,7 @@ making this object}
 Make database connection
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{databaseClass$connect_to_database(
-  config_file = NULL,
+  config_file = "conf/config.yml",
   schema = NULL,
   what = NULL,
   pool = TRUE,
@@ -125,6 +126,16 @@ Make database connection
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-NA-postgres_now"></a>}}
+\if{latex}{\out{\hypertarget{method-NA-postgres_now}{}}}
+\subsection{Method \code{postgres_now()}}{
+Timestamp on postgres server, now
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{databaseClass$postgres_now()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-NA-close"></a>}}

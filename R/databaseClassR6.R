@@ -65,7 +65,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @param schema Name of schema where the data resides
     #' @param pool Logical; use [dbPool()] or not.
     #' @param sqlite Name of `sqlite` DB file; if used.
-    connect_to_database = function(config_file = NULL,
+    connect_to_database = function(config_file = "conf/config.yml",
                                    schema = NULL,
                                    what = NULL,
                                    pool = TRUE,
@@ -110,6 +110,13 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
       }
 
+
+    },
+
+    #' @description Timestamp on postgres server, now
+    postgres_now = function(){
+
+      self$query("select now()")$now
 
     },
 
