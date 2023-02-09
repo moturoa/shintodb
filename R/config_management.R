@@ -52,7 +52,7 @@
 add_config_entry <- function(name, dbname,  dbuser = dbname,
                              file = "conf/config.yml",
                              where = c("development","production"),
-                             encrypt = FALSE,
+                             encrypt = TRUE,
                              ...){
 
 
