@@ -9,8 +9,8 @@ add_config_entry(
   dbname,
   dbuser = dbname,
   file = "conf/config.yml",
-  where = c("development", "production"),
-  encrypt = FALSE,
+  where = c("development", "production", "eindhoven_premium"),
+  encrypt = TRUE,
   ...
 )
 }

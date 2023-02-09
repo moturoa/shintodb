@@ -51,7 +51,7 @@
 #' }
 add_config_entry <- function(name, dbname,  dbuser = dbname,
                              file = "conf/config.yml",
-                             where = c("development","production"),
+                             where = c("development","production","eindhoven_premium"),
                              encrypt = TRUE,
                              ...){
 
@@ -79,11 +79,19 @@ add_config_entry <- function(name, dbname,  dbuser = dbname,
 
   } else {
 
-    if(!has_config_entry(name, conf, "production")){
-      lis_prod <- db_entry_list(name, dbname, dbuser, infra = "p2",
+    if(!has_config_entry(name, conf, where)){
+
+      if(where == "production"){
+        infra <- "p2"
+      } else {
+        infra <- where
+      }
+
+      lis_prod <- db_entry_list(name, dbname, dbuser, infra = infra,
                                 local = FALSE, encrypt = encrypt)
 
-      conf$production <- c(conf$production, lis_prod)
+      conf[[where]] <- c(conf[[where]], lis_prod)
+
     } else {
       message("Config entry already in config file; skipped")
     }
@@ -141,7 +149,7 @@ read_config <- function(file){
 
 
 
-db_entry_list <- function(name, dbname, dbuser = dbname, infra = c("dev2","p2"),
+db_entry_list <- function(name, dbname, dbuser = dbname, infra,
                           local = FALSE, password = NULL, encrypt = FALSE){
 
   msg <- glue("Password voor {dbname}, user {dbuser}, infra: {infra}")
@@ -216,25 +224,25 @@ get_port <- function(infra, local = FALSE){
 
 }
 
-get_host <- function(infra = c("dev2","p2"), local = FALSE){
+get_host <- function(infra = c("dev2","p2","eindhoven_premium"), local = FALSE){
 
   infra <- match.arg(infra)
 
-  if(!local){
-    glue("postgres-{infra}.postgres.database.azure.com")
+  if(infra == "eindhoven_premium"){
+    "postgres-ehv01.postgres.database.azure.com"
   } else {
-    "localhost"
+    if(!local){
+      glue("postgres-{infra}.postgres.database.azure.com")
+    } else {
+      "localhost"
+    }
   }
 
 }
 
-get_dbuser <- function(dbuser, infra = c("dev2","p2"), local = FALSE){
-  infra <- match.arg(infra)
-  if(local){
-    glue("{dbuser}@postgres-{infra}")
-  } else {
-    glue("{dbuser}@postgres-{infra}.postgres.database.azure.com")
-  }
+get_dbuser <- function(dbuser, ...){
+
+  paste0(dbuser, "@", get_host(...))
 
 }
 
