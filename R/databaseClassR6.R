@@ -354,7 +354,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' }
     replace_value_where = function(table,
                                    col_replace, val_replace, col_compare, val_compare,
-                                   query_only = FALSE, quiet = FALSE){
+                                   query_only = FALSE){
 
       # postgres accepts 'true' but not 1 (which sqlInterpolate makes it into)
       if(is.logical(val_replace)){
@@ -498,6 +498,9 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
       }
 
       if(!is.null(query)){
+        if(nchar(query) > 400){
+          query <- "Query not shown - too long"
+        }
         private$log(query)
       }
 

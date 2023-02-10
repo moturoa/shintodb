@@ -372,8 +372,7 @@ Update a value in a table given a single logical condition
   val_replace,
   col_compare,
   val_compare,
-  query_only = FALSE,
-  quiet = FALSE
+  query_only = FALSE
 )}\if{html}{\out{</div>}}
 }
 
