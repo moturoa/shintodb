@@ -5,7 +5,7 @@
 #' @importFrom pool dbPool poolClose
 #' @importFrom dbplyr in_schema
 #' @importFrom dplyr tbl left_join collect
-#' @importFrom DBI dbWriteTable dbGetQuery dbExecute Id dbIsValid
+#' @importFrom DBI dbWriteTable dbGetQuery dbExecute Id dbIsValid sqlInterpolate
 #' @export
 databaseClass <- R6::R6Class(lock_objects = FALSE,
 
@@ -34,6 +34,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @param what Connect to which database entry in the config file
     #' @param schema Name of schema where the data resides
     #' @param pool Logical; use [dbPool()] or not.
+    #' @param db_connection Use an existing database connection (recycle)
     #' @param connect_on_init Whether to immediately make a DB connection when
     #' making this object
     #' @param log_level Either 'all' (all logging) or 'none'.
@@ -42,6 +43,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
                           schema = NULL,
                           pool = TRUE,
                           connect_on_init = TRUE,
+                          db_connection = NULL,
                           log_level = c("all","none")
                           ){
 
@@ -51,11 +53,27 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
           schema <- "public"
         }
 
-        self$connect_to_database(config_file, schema, what, pool)
+
+        if(is.null(db_connection)){
+
+          self$connect_to_database(config_file, schema, what, pool)
+
+        } else {
+
+          if(!DBI::dbIsValid(db_connection)){
+            stop("Please pass a valid dbConnection object")
+          }
+
+          self$con <- db_connection
+          self$schema <- schema
+          self$pool <- pool  #unused with passed db_connection?
+          self$dbtype <- "postgres"
+
+        }
+
       }
 
       self$log_level <- match.arg(log_level)
-
 
     },
 
@@ -346,7 +364,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
       query <- glue::glue("update {self$schema}.{table} set {col_replace} = ?val_replace where",
                           " {col_compare} = ?val_compare") %>% as.character()
 
-      query <- sqlInterpolate(DBI::ANSI(),
+      query <- DBI::sqlInterpolate(DBI::ANSI(),
                               query,
                               val_replace = val_replace, val_compare = val_compare)
 

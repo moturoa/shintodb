@@ -73,6 +73,7 @@ Make a new R6 object of class \code{database}
   schema = NULL,
   pool = TRUE,
   connect_on_init = TRUE,
+  db_connection = NULL,
   log_level = c("all", "none")
 )}\if{html}{\out{</div>}}
 }
@@ -90,6 +91,8 @@ Make a new R6 object of class \code{database}
 
 \item{\code{connect_on_init}}{Whether to immediately make a DB connection when
 making this object}
+
+\item{\code{db_connection}}{Use an existing database connection (recycle)}
 
 \item{\code{log_level}}{Either 'all' (all logging) or 'none'.}
 }
