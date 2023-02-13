@@ -44,7 +44,8 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
                           pool = TRUE,
                           connect_on_init = TRUE,
                           db_connection = NULL,
-                          log_level = c("all","none")
+                          log_level = c("all","none"),
+                          sqlite = NULL
                           ){
 
       if(connect_on_init){
@@ -56,7 +57,8 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
         if(is.null(db_connection)){
 
-          self$connect_to_database(config_file, schema, what, pool)
+          self$connect_to_database(config_file = config_file, schema = schema,
+                                   what = what, pool = pool, sqlite = sqlite)
 
         } else {
 

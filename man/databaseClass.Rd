@@ -74,7 +74,8 @@ Make a new R6 object of class \code{database}
   pool = TRUE,
   connect_on_init = TRUE,
   db_connection = NULL,
-  log_level = c("all", "none")
+  log_level = c("all", "none"),
+  sqlite = NULL
 )}\if{html}{\out{</div>}}
 }
 
