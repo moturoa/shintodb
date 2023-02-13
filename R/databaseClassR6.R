@@ -288,7 +288,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @param txt SQL query
     #' @param glue If TRUE, can `glue` the SQL query
     #' @details Query wrapped in `try`, for safety
-    query = function(txt, glue = FALSE){
+    query = function(txt, glue = FALSE, quiet = FALSE){
 
       if(glue)txt <- glue::glue(txt)
 
@@ -296,7 +296,9 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
         DBI::dbGetQuery(self$con, txt)
       )
 
-      private$write_output_log(query = txt, data = out)
+      if(!quiet){
+        private$write_output_log(query = txt, data = out)
+      }
 
       out
 
@@ -313,11 +315,13 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @description Run an SQL statement with [dbExecute()]
     #' @param txt SQL query ("alter table" type commands)
     #' @param glue If TRUE, `glue`s the query
-    execute_query = function(txt, glue = FALSE){
+    execute_query = function(txt, glue = FALSE, quiet = FALSE){
 
       if(glue)txt <- glue::glue(txt)
 
-      private$write_output_log(query = txt)
+      if(!quiet){
+        private$write_output_log(query = txt)
+      }
 
       try(
         DBI::dbExecute(self$con, txt)

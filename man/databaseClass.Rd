@@ -282,7 +282,7 @@ Be vary careful. Also, if there were indexes, you have to reset them.
 \subsection{Method \code{query()}}{
 Run an SQL statement with \code{\link[=dbGetQuery]{dbGetQuery()}}
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{databaseClass$query(txt, glue = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{databaseClass$query(txt, glue = FALSE, quiet = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -326,7 +326,7 @@ Query wrapped in \code{try}, for safety
 \subsection{Method \code{execute_query()}}{
 Run an SQL statement with \code{\link[=dbExecute]{dbExecute()}}
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{databaseClass$execute_query(txt, glue = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{databaseClass$execute_query(txt, glue = FALSE, quiet = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
