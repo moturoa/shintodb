@@ -12,6 +12,7 @@
 #' @importFrom pool dbPool
 #' @importFrom RPostgres Postgres
 #' @importFrom glue glue
+#' @importFrom futile.logger flog.info flog.warn
 connect <- function(what,
                     file = getOption("shintodb_config_file", "conf/config.yml"),
                     pool = FALSE,
@@ -29,9 +30,13 @@ connect <- function(what,
     stop(glue::glue("Connection entry '{what}' not found in file '{file}' (section '{config_entry}')"))
   }
 
+  futile.logger::flog.info(glue::glue("Connecting to {conf$dbname} on {conf$dbhost} with user {conf$dbuser}"))
+
   # If password is encrypted, decrypt it before connecting
   if(string_is_encrypted(conf$dbpassword)){
     conf$dbpassword <- decrypt(conf$dbpassword)
+  } else {
+    futile.logger::flog.warn(glue::glue("Password is not encrypted - run shintodb::encrypt_config_file()"))
   }
 
   if(!pool){
