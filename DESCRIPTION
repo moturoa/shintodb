@@ -8,7 +8,7 @@ Description: Everything to work with PostgresDB in Shinto apps.
   Manage, encrypt, and decrypt config files. Database R6 layer with
   generic methods. Manage database connections automatically.
 Imports: DBI, R6, config, dbplyr, dplyr, glue, pool, safer, yaml, lifecycle,
-  rstudioapi, RPostgres
+  rstudioapi, RPostgres, futile.logger
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
