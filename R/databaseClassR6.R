@@ -367,6 +367,11 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
         val_replace <- tolower(as.character(val_replace))
       }
 
+      if(is.na(val_compare) || val_compare == ""){
+        message("$replace_value_where (shintodb) ignored because val_compare is empty")
+        return(FALSE)
+      }
+
       query <- glue::glue("update {self$schema}.{table} set {col_replace} = ?val_replace where",
                           " {col_compare} = ?val_compare") %>% as.character()
 
@@ -376,8 +381,9 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
       if(query_only)return(query)
 
-      self$execute_query(query)
+      res <- self$execute_query(query)
 
+      return(!inherits(res, "try-error"))  # success T/F
 
     },
 
