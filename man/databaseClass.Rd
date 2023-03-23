@@ -210,7 +210,7 @@ Add a column to a table
 \subsection{Method \code{read_table()}}{
 Read a table from the DB, maybe "lazy"
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{databaseClass$read_table(table, lazy = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{databaseClass$read_table(table, lazy = FALSE, exclude_columns = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

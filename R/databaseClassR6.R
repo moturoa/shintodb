@@ -207,12 +207,17 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' before downloading the entire table.
     #' @param table Name of table (in the global schema)
     #' @param lazy Logical, if FALSE (default), simply downloads the whole table.
-    read_table = function(table, lazy = FALSE){
+    read_table = function(table, lazy = FALSE, exclude_columns = NULL){
 
       if(!is.null(self$schema)){
         out <- dplyr::tbl(self$con,  dbplyr::in_schema(self$schema, table))
       } else {
         out <- dplyr::tbl(self$con, table)
+      }
+
+      # Exclude columns *before* downloading data
+      if(!is.null(exclude_columns)){
+        out <- dplyr::select(out, -dplyr::any_of(exclude_columns))
       }
 
       if(!lazy){
