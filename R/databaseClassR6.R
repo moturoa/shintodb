@@ -45,7 +45,8 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
                           connect_on_init = TRUE,
                           db_connection = NULL,
                           log_level = c("all","none"),
-                          sqlite = NULL
+                          sqlite = NULL,
+                          config_entry = NULL
                           ){
 
       if(connect_on_init){
@@ -58,7 +59,8 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
         if(is.null(db_connection)){
 
           self$connect_to_database(config_file = config_file, schema = schema,
-                                   what = what, pool = pool, sqlite = sqlite)
+                                   what = what, pool = pool, sqlite = sqlite,
+                                   config_entry = config_entry)
 
         } else {
 
@@ -89,7 +91,8 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
                                    schema = NULL,
                                    what = NULL,
                                    pool = TRUE,
-                                   sqlite = NULL){
+                                   sqlite = NULL,
+                                   config_entry = NULL){
 
 
       if(!is.null(sqlite)){
@@ -121,7 +124,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
         self$dbuser <- cf$dbuser
 
         response <- try(
-          shintodb::connect(what, config_file, pool)
+          shintodb::connect(what, file = config_file, pool = pool, config_entry = config_entry)
         )
 
         if(!inherits(response, "try-error")){
