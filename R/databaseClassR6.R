@@ -175,6 +175,19 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
     },
 
+    #' @description List indexes on tables in the selected schema
+    list_indexes = function(){
+
+      tabs <- self$list_tables()[[1]]
+
+      tbl(self$con, "pg_indexes") |>
+        dplyr::filter(tablename %in% !!tabs,
+               schemaname == !!self$schema) |>
+        dplyr::collect()
+
+    },
+
+
     #' @description Does `table` have `column`?
     #' @param table Table name
     #' @param column Column name
@@ -381,7 +394,8 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
       }
 
       query <- glue::glue("update {self$schema}.{table} set {col_replace} = ?val_replace where",
-                          " {col_compare} = ?val_compare") %>% as.character()
+                          " {col_compare} = ?val_compare") |>
+        as.character()
 
       query <- DBI::sqlInterpolate(DBI::ANSI(),
                               query,
@@ -418,11 +432,11 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
       if(!is.null(self$schema)){
         query <- glue::glue("update {self$schema}.{table} set {col_replace} = ?val_replace where ",
                       "{col_compare1} = ?val_compare1 AND ",
-                      "{col_compare2} = ?val_compare2") %>% as.character()
+                      "{col_compare2} = ?val_compare2") |> as.character()
       } else {
         query <- glue::glue("update {table} set {col_replace} = ?val_replace where ",
                       "{col_compare1} = ?val_compare1 AND ",
-                      "{col_compare2} = ?val_compare2") %>% as.character()
+                      "{col_compare2} = ?val_compare2") |> as.character()
       }
 
 

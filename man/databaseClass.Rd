@@ -43,6 +43,7 @@ replace_value_where("table", 'verwijderd', 'true', 'naam', 'gekozennaam')
 \item \href{#method-NA-postgres_now}{\code{databaseClass$postgres_now()}}
 \item \href{#method-NA-close}{\code{databaseClass$close()}}
 \item \href{#method-NA-list_tables}{\code{databaseClass$list_tables()}}
+\item \href{#method-NA-list_indexes}{\code{databaseClass$list_indexes()}}
 \item \href{#method-NA-have_column}{\code{databaseClass$have_column()}}
 \item \href{#method-NA-make_column}{\code{databaseClass$make_column()}}
 \item \href{#method-NA-read_table}{\code{databaseClass$read_table()}}
@@ -160,6 +161,16 @@ Close DB connection.
 List tables
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{databaseClass$list_tables()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-NA-list_indexes"></a>}}
+\if{latex}{\out{\hypertarget{method-NA-list_indexes}{}}}
+\subsection{Method \code{list_indexes()}}{
+List indexes on tables in the selected schema
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{databaseClass$list_indexes()}\if{html}{\out{</div>}}
 }
 
 }
