@@ -47,6 +47,7 @@ replace_value_where("table", 'verwijderd', 'true', 'naam', 'gekozennaam')
 \item \href{#method-NA-have_column}{\code{databaseClass$have_column()}}
 \item \href{#method-NA-make_column}{\code{databaseClass$make_column()}}
 \item \href{#method-NA-read_table}{\code{databaseClass$read_table()}}
+\item \href{#method-NA-filter}{\code{databaseClass$filter()}}
 \item \href{#method-NA-append_data}{\code{databaseClass$append_data()}}
 \item \href{#method-NA-write_table_overwrite}{\code{databaseClass$write_table_overwrite()}}
 \item \href{#method-NA-query}{\code{databaseClass$query()}}
@@ -239,6 +240,15 @@ Read a table from the DB, maybe "lazy"
 If \code{lazy=TRUE}, returns a lazy connection that can be filtered, selected etc.
 using \code{dbplyr}'s \code{filter}, \code{select}, etc. Use if you want the work to be done by the DB,
 before downloading the entire table.
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-NA-filter"></a>}}
+\if{latex}{\out{\hypertarget{method-NA-filter}{}}}
+\subsection{Method \code{filter()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{databaseClass$filter(table, ...)}\if{html}{\out{</div>}}
 }
 
 }

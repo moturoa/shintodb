@@ -247,6 +247,15 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
     },
 
+    #' @description Short for `read_table(table,lazy=T) |> filter() |> collect`
+    filter = function(table, ...){
+
+      self$read_table(table, lazy = TRUE) |>
+        dplyr::filter(...) |>
+        collect()
+
+    },
+
     #' @description Append rows to an existing table
     #' @param table Table name
     #' @param data Dataframe with columns that exist in `table`
