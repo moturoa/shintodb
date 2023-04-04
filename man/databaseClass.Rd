@@ -41,6 +41,7 @@ replace_value_where("table", 'verwijderd', 'true', 'naam', 'gekozennaam')
 \item \href{#method-NA-new}{\code{databaseClass$new()}}
 \item \href{#method-NA-connect_to_database}{\code{databaseClass$connect_to_database()}}
 \item \href{#method-NA-postgres_now}{\code{databaseClass$postgres_now()}}
+\item \href{#method-NA-postgres_now_in_local_time}{\code{databaseClass$postgres_now_in_local_time()}}
 \item \href{#method-NA-close}{\code{databaseClass$close()}}
 \item \href{#method-NA-list_tables}{\code{databaseClass$list_tables()}}
 \item \href{#method-NA-list_indexes}{\code{databaseClass$list_indexes()}}
@@ -146,6 +147,16 @@ Timestamp on postgres server, now
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-NA-postgres_now_in_local_time"></a>}}
+\if{latex}{\out{\hypertarget{method-NA-postgres_now_in_local_time}{}}}
+\subsection{Method \code{postgres_now_in_local_time()}}{
+Timestamp on postgres server translated to local time
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{databaseClass$postgres_now_in_local_time()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-NA-close"></a>}}
 \if{latex}{\out{\hypertarget{method-NA-close}{}}}
 \subsection{Method \code{close()}}{
@@ -247,6 +258,7 @@ before downloading the entire table.
 \if{html}{\out{<a id="method-NA-filter"></a>}}
 \if{latex}{\out{\hypertarget{method-NA-filter}{}}}
 \subsection{Method \code{filter()}}{
+Short for \verb{read_table(table,lazy=T) |> filter() |> collect}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{databaseClass$filter(table, ...)}\if{html}{\out{</div>}}
 }

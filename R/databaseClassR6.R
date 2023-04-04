@@ -143,6 +143,14 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
     },
 
+    #' @description Timestamp on postgres server translated to local time
+    postgres_now_in_local_time = function(){
+
+      d <- self$postgres_now()
+      lubridate::with_tz(d, "Europe/Berlin")
+
+    },
+
     #' @description Close DB connection.
     close = function(){
 
