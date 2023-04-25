@@ -492,8 +492,13 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @param empty_table If TRUE, returns a table with 0 rows, otherwise
     #' a vector of table column names,
     table_columns = function(table, empty_table = FALSE){
-
-      query <- glue::glue("select * from {self$schema}.{table} where false")
+      if(!is.null(self$schema)){
+        query <- glue::glue("select * from {self$schema}.{table} where false")
+        
+      } else {
+        query <- glue::glue("select * from {table} where false")
+      }
+         
 
       out <- self$query(query)
 
