@@ -50,11 +50,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
                           ){
 
       if(connect_on_init){
-
-        if(is.null(schema)){
-          schema <- "public"
-        }
-
+ 
 
         if(is.null(db_connection)){
 
