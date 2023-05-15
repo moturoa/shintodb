@@ -62,7 +62,7 @@ add_config_entry <- function(name, dbname,  dbuser = dbname,
 
   if(where == "development"){
 
-    if(!has_config_entry(name, conf, "development")){
+    if(!has_config_entry(name, "development", conf)){
 
       lis_default <- db_entry_list(name, dbname, dbuser, infra = "dev2",
                                    local = TRUE, encrypt = encrypt)
@@ -79,7 +79,7 @@ add_config_entry <- function(name, dbname,  dbuser = dbname,
 
   } else {
 
-    if(!has_config_entry(name, conf, where)){
+    if(!has_config_entry(name, where, conf)){
 
       if(where == "production"){
         infra <- "p2"
@@ -122,22 +122,28 @@ make_config <- function(){
 
 }
 
+#' Check if a config entry is available
+#' @param name The config entry, for example "data_bag"
+#' @param where The block to look for the entry (development, production)
+#' @param conf Optional: a config list read with [read_config()]
+#' @param config_file Path to the config file
+#' @returns TRUE if a config entry is found
+#' @export
+has_config_entry <- function(name, where, conf = NULL, config_file = "conf/config.yml"){
 
+  if(is.null(conf)){
+    conf <- read_config(config_file)
+  }
 
-
-
-#=------- Utils
-
-# TRUE if a config entry is found
-has_config_entry <- function(name, conf, where){
-
- !is.null(conf[[where]][[name]])
+  !is.null(conf[[where]][[name]])
 
 }
 
-
+#' Read a config file (with read_yaml)
+#' @param file Typically conf/config.yml
 #' @importFrom yaml read_yaml
-read_config <- function(file){
+#' @export
+read_config <- function(file = "conf/config.yml"){
 
   if(!file.exists(file)){
     stop("File not found. First add a file like conf/config.yml")
@@ -146,6 +152,14 @@ read_config <- function(file){
   yaml::read_yaml(file)
 
 }
+
+
+
+#=------- Utils
+
+
+
+
 
 
 

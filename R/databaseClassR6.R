@@ -98,7 +98,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
       if(!is.null(sqlite)){
 
         if(!file.exists(sqlite)){
-          stop("SQlite not found, check path")
+          message("SQlite file does not exist: creating new database.")
         }
 
         self$schema <- NULL
