@@ -87,12 +87,14 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @param schema Name of schema where the data resides
     #' @param pool Logical; use [dbPool()] or not.
     #' @param sqlite Name of `sqlite` DB file; if used.
+    #' @param db_connection Use this existing connection; only implemented for postgres
     connect_to_database = function(config_file = "conf/config.yml",
                                    schema = NULL,
                                    what = NULL,
                                    pool = TRUE,
                                    sqlite = NULL,
-                                   config_entry = NULL){
+                                   config_entry = NULL,
+                                   db_connection = NULL){
 
 
       if(!is.null(sqlite)){
@@ -120,20 +122,34 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
         self$pool <- pool
         self$dbtype <- "postgres"
 
-        cf <- config::get(what, file = config_file)
-        self$dbuser <- cf$dbuser
+        if(is.null(db_connection)){
 
-        response <- try(
-          shintodb::connect(what, file = config_file, pool = pool, config_entry = config_entry)
-        )
+          cf <- config::get(what, file = config_file)
+          self$dbuser <- cf$dbuser
 
-        if(!inherits(response, "try-error")){
-          self$con <- response
+          response <- try(
+            shintodb::connect(what, file = config_file, pool = pool, config_entry = config_entry)
+          )
+
+          if(!inherits(response, "try-error")){
+            self$con <- response
+          }
+
+        } else {
+          self$con <- db_connection
         }
+
+
 
       }
 
 
+    },
+
+    #' @description Do we have a valid DB connection?
+    has_connection = function(){
+
+      !is.null(self$con) && DBI::dbIsValid(self$con)
     },
 
     #' @description Timestamp on postgres server, now
@@ -154,7 +170,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @description Close DB connection.
     close = function(){
 
-      if(!is.null(self$con) && DBI::dbIsValid(self$con)){
+      if(self$has_connection()){
 
         if(self$pool){
           private$log("poolClose")

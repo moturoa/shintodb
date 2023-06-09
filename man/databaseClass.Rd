@@ -40,6 +40,7 @@ replace_value_where("table", 'verwijderd', 'true', 'naam', 'gekozennaam')
 \itemize{
 \item \href{#method-NA-new}{\code{databaseClass$new()}}
 \item \href{#method-NA-connect_to_database}{\code{databaseClass$connect_to_database()}}
+\item \href{#method-NA-has_connection}{\code{databaseClass$has_connection()}}
 \item \href{#method-NA-postgres_now}{\code{databaseClass$postgres_now()}}
 \item \href{#method-NA-postgres_now_in_local_time}{\code{databaseClass$postgres_now_in_local_time()}}
 \item \href{#method-NA-close}{\code{databaseClass$close()}}
@@ -116,7 +117,8 @@ Make database connection
   what = NULL,
   pool = TRUE,
   sqlite = NULL,
-  config_entry = NULL
+  config_entry = NULL,
+  db_connection = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -132,9 +134,21 @@ Make database connection
 \item{\code{pool}}{Logical; use \code{\link[=dbPool]{dbPool()}} or not.}
 
 \item{\code{sqlite}}{Name of \code{sqlite} DB file; if used.}
+
+\item{\code{db_connection}}{Use this existing connection; only implemented for postgres}
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-NA-has_connection"></a>}}
+\if{latex}{\out{\hypertarget{method-NA-has_connection}{}}}
+\subsection{Method \code{has_connection()}}{
+Do we have a valid DB connection?
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{databaseClass$has_connection()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-NA-postgres_now"></a>}}
