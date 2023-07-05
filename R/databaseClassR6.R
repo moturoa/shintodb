@@ -235,7 +235,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @param type Column type - watch out, not checked against valid types!
     make_column = function(table, column, type = "varchar"){
 
-      qu <- glue::glue("alter table {self$schema}.{table} add column {column} {type}")
+      qu <- glue::glue("alter table {self$schema}.{table} add column if not exists {column} {type}")
       self$execute_query(qu)
 
     },
