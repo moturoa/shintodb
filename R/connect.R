@@ -22,9 +22,21 @@ connect <- function(what,
     config_entry <- Sys.getenv("R_CONFIG_ACTIVE", "default")
   }
 
+  if(config_entry == "productionlocal"){
+    localized <- TRUE
+    config_entry <- "production"
+  } else {
+    localized <- FALSE
+  }
+
   conf <- config::get(value = what,
                       config = config_entry,
                       file = file)
+
+  if(localized){
+    conf$dbport <- get_user_local_port("p2")
+    conf$dbhost <- "localhost"
+  }
 
   if(is.null(conf)){
     stop(glue::glue("Connection entry '{what}' not found in file '{file}' (section '{config_entry}')"))
@@ -38,6 +50,8 @@ connect <- function(what,
   } else {
     futile.logger::flog.warn(glue::glue("Password is not encrypted - run shintodb::encrypt_config_file()"))
   }
+
+
 
   if(!pool){
     DBI::dbConnect(RPostgres::Postgres(),
