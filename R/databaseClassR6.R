@@ -565,7 +565,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
       }
 
       if(!is.null(query)){
-        if(nchar(query) > 400){
+        if(isTRUE(nchar(query) > 400)){
           query <- "Query not shown - too long"
         }
         private$log(query)
