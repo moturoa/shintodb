@@ -155,7 +155,13 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @description Timestamp on postgres server, now
     postgres_now = function(){
 
-      self$query("select now()")$now
+      if(self$dbtype == "postgres"){
+        self$query("select now()")$now
+      } else {
+        # sqlite
+        self$query("select time('now')")[[1]]
+      }
+
 
     },
 
