@@ -51,7 +51,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
       if(connect_on_init){
 
-        if(is.null(schema)){
+        if(is.null(schema) & is.null(sqlite)){
           schema <- "public"
         }
 
@@ -515,7 +515,11 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' a vector of table column names,
     table_columns = function(table, empty_table = FALSE){
 
-      query <- glue::glue("select * from {self$schema}.{table} where false")
+      if(!is.null(self$schema)){
+        query <- glue::glue("select * from {self$schema}.{table} where false")
+      } else {
+        query <- glue::glue("select * from {table} where false")
+      }
 
       out <- self$query(query)
 
