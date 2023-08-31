@@ -48,7 +48,11 @@ connect <- function(what,
   if(string_is_encrypted(conf$dbpassword)){
     conf$dbpassword <- decrypt(conf$dbpassword)
   } else {
-    futile.logger::flog.warn(glue::glue("Password is not encrypted - run shintodb::encrypt_config_file()"))
+    if(interactive()){
+      futile.logger::flog.warn("Password is not encrypted - run shintodb::encrypt_config_file()")
+    } else {
+      futile.logger::flog.info("Password is not encrypted - this is OK when running on a posit connect server.")
+    }
   }
 
 
