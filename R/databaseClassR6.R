@@ -38,6 +38,8 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @param connect_on_init Whether to immediately make a DB connection when
     #' making this object
     #' @param log_level Either 'all' (all logging) or 'none'.
+    #' @param sqlite When using an SQLite backend, pass the filename here
+    #' @param config_entry Section in the db config; read from R_CONFIG_ACTIVE env var if not set
     initialize = function(config_file = "conf/config.yml",
                           what,
                           schema = NULL,
@@ -88,6 +90,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @param pool Logical; use [dbPool()] or not.
     #' @param sqlite Name of `sqlite` DB file; if used.
     #' @param db_connection Use this existing connection; only implemented for postgres
+    #' @param config_entry Section in the db config; read from R_CONFIG_ACTIVE env var if not set
     #' @importFrom cli cli_alert_info
     connect_to_database = function(config_file = "conf/config.yml",
                                    schema = NULL,
@@ -254,6 +257,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' before downloading the entire table.
     #' @param table Name of table (in the global schema)
     #' @param lazy Logical, if FALSE (default), simply downloads the whole table.
+    #' @param exclude_columns Can be a vector of columns not to read (for performance, for example large spatial colummns)
     read_table = function(table, lazy = FALSE, exclude_columns = NULL){
 
       if(!is.null(self$schema)){
@@ -279,11 +283,13 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     },
 
     #' @description Short for `read_table(table,lazy=T) |> filter() |> collect`
+    #' @param table Table name (without the self schema)
+    #' @param ... Further arguments to dplyr::filter
     filter = function(table, ...){
 
       self$read_table(table, lazy = TRUE) |>
         dplyr::filter(...) |>
-        collect()
+        dbplyr::collect()
 
     },
 
@@ -350,6 +356,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @description Run an SQL statement with [dbGetQuery()]
     #' @param txt SQL query
     #' @param glue If TRUE, can `glue` the SQL query
+    #' @param quiet If not TRUE, logs some output (the query)
     #' @details Query wrapped in `try`, for safety
     query = function(txt, glue = FALSE, quiet = FALSE){
 
@@ -378,6 +385,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @description Run an SQL statement with [dbExecute()]
     #' @param txt SQL query ("alter table" type commands)
     #' @param glue If TRUE, `glue`s the query
+    #' @param quiet If not TRUE, logs some output (the query)
     execute_query = function(txt, glue = FALSE, quiet = FALSE){
 
       if(glue)txt <- glue::glue(txt)
@@ -549,8 +557,6 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
   private = list(
 
-    #' @description Make a SQL representation of a vector
-    #' @param x Vector
     to_sql_string = function(x){
 
         paste0(

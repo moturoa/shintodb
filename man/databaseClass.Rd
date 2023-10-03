@@ -101,6 +101,10 @@ making this object}
 \item{\code{db_connection}}{Use an existing database connection (recycle)}
 
 \item{\code{log_level}}{Either 'all' (all logging) or 'none'.}
+
+\item{\code{sqlite}}{When using an SQLite backend, pass the filename here}
+
+\item{\code{config_entry}}{Section in the db config; read from R_CONFIG_ACTIVE env var if not set}
 }
 \if{html}{\out{</div>}}
 }
@@ -134,6 +138,8 @@ Make database connection
 \item{\code{pool}}{Logical; use \code{\link[=dbPool]{dbPool()}} or not.}
 
 \item{\code{sqlite}}{Name of \code{sqlite} DB file; if used.}
+
+\item{\code{config_entry}}{Section in the db config; read from R_CONFIG_ACTIVE env var if not set}
 
 \item{\code{db_connection}}{Use this existing connection; only implemented for postgres}
 }
@@ -258,6 +264,8 @@ Read a table from the DB, maybe "lazy"
 \item{\code{table}}{Name of table (in the global schema)}
 
 \item{\code{lazy}}{Logical, if FALSE (default), simply downloads the whole table.}
+
+\item{\code{exclude_columns}}{Can be a vector of columns not to read (for performance, for example large spatial colummns)}
 }
 \if{html}{\out{</div>}}
 }
@@ -341,6 +349,8 @@ Run an SQL statement with \code{\link[=dbGetQuery]{dbGetQuery()}}
 \item{\code{txt}}{SQL query}
 
 \item{\code{glue}}{If TRUE, can \code{glue} the SQL query}
+
+\item{\code{quiet}}{If not TRUE, logs some output (the query)}
 }
 \if{html}{\out{</div>}}
 }
@@ -385,6 +395,8 @@ Run an SQL statement with \code{\link[=dbExecute]{dbExecute()}}
 \item{\code{txt}}{SQL query ("alter table" type commands)}
 
 \item{\code{glue}}{If TRUE, \code{glue}s the query}
+
+\item{\code{quiet}}{If not TRUE, logs some output (the query)}
 }
 \if{html}{\out{</div>}}
 }
