@@ -9,6 +9,7 @@
 #' @param password_names Entries to look for with passwords.
 #' @export
 #' @rdname encrypt_file
+#' @importFrom cli cli_alert_danger cli_alert_success
 #' @examples
 #' \dontrun{
 #' Sys.setenv(SHINTO_PASS_SECRET = "mysecret")
@@ -46,8 +47,8 @@ encrypt_config_file <- function(file = "conf/config.yml",
     }
   }
 
-  message(glue::glue("{n_dec} passwords encrypted"))
-  message(glue::glue("{n_notdec} passwords were already encrypted"))
+  cli::cli_alert_success(glue::glue("{n_dec} passwords encrypted"))
+  cli::cli_alert_success(glue::glue("{n_notdec} passwords were already encrypted"))
 
   yaml::write_yaml(cfg, out_file)
 }

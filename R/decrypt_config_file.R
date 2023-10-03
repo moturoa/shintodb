@@ -40,7 +40,7 @@ decrypt_config_file <- function(file, file_out,
           pass <- cfg[[i]][[k]][[ind]]
 
           if(!isTRUE(string_is_encrypted(pass))){
-            message(paste("Password for",names(x)[k],"not encrypted or corrupt, skipping"))
+            cli::cli_alert_danger(paste("Password for",names(x)[k],"not encrypted or corrupt, skipping"))
           }
 
           cfg[[i]][[k]][[ind]] <- decrypt(pass, secret = secret)

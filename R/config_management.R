@@ -66,6 +66,13 @@ add_config_entry <- function(name, dbname,  dbuser = dbname,
 
       lis_default <- db_entry_list(name, dbname, dbuser, infra = "dev2",
                                    local = TRUE, encrypt = encrypt)
+
+      # pressed cancel
+      if(is.null(lis_default)){
+        cli::cli_alert_info("shintodb::add_config_entry() : password entry cancelled")
+        return(invisible(NULL))
+      }
+
       lis_dev2 <- db_entry_list(name, dbname, dbuser, infra = "dev2", local = FALSE,
                                 encrypt = FALSE,  # <- already encrypted in previous list (or not)
                                 password = lis_default[[1]]$dbpassword)
@@ -74,7 +81,7 @@ add_config_entry <- function(name, dbname,  dbuser = dbname,
       conf$default <- c(conf$default, lis_default)
       conf$development <- c(conf$development, lis_dev2)
     } else {
-      message("Config entry already in config file; skipped")
+      cli::cli_alert_info("shintodb::add_config_entry() : Config entry already in config file; skipped")
     }
 
   } else {
@@ -93,7 +100,8 @@ add_config_entry <- function(name, dbname,  dbuser = dbname,
       conf[[where]] <- c(conf[[where]], lis_prod)
 
     } else {
-      message("Config entry already in config file; skipped")
+      cli::cli_alert_info("shintodb::add_config_entry() : Config entry already in config file; skipped")
+      return(invisible(NULL))
     }
 
   }
@@ -117,7 +125,7 @@ make_config <- function(){
   if(!file.exists(fn)){
     writeLines("", fn)
   } else {
-    message("Ignored, already exists.")
+    cli::cli_alert_info("make_config() ignored, conf/config.yml already exists.")
   }
 
 }
@@ -168,8 +176,12 @@ db_entry_list <- function(name, dbname, dbuser = dbname, infra,
 
   msg <- glue("Password voor {dbname}, user {dbuser}, infra: {infra}")
 
-  if(is.null(password)){
+  if(interactive() && is.null(password)){
     password <- rstudioapi::askForPassword(msg)
+  }
+
+  if(is.null(password)){
+    return(NULL)
   }
 
   if(encrypt){

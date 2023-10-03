@@ -5,7 +5,7 @@
 \title{Check if a config file is encrypted}
 \usage{
 config_is_encrypted(
-  file,
+  file = "conf/config.yml",
   password_names = "dbpassword",
   secret = Sys.getenv("SHINTO_PASS_SECRET")
 )

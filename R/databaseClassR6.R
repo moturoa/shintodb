@@ -88,6 +88,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     #' @param pool Logical; use [dbPool()] or not.
     #' @param sqlite Name of `sqlite` DB file; if used.
     #' @param db_connection Use this existing connection; only implemented for postgres
+    #' @importFrom cli cli_alert_info
     connect_to_database = function(config_file = "conf/config.yml",
                                    schema = NULL,
                                    what = NULL,
@@ -100,7 +101,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
       if(!is.null(sqlite)){
 
         if(!file.exists(sqlite)){
-          message("SQlite file does not exist: creating new database.")
+          cli::cli_alert_info("SQlite file does not exist: creating new database.")
         }
 
         self$schema <- NULL
@@ -428,7 +429,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
       }
 
       if(is.na(val_compare) || val_compare == ""){
-        message("$replace_value_where (shintodb) ignored because val_compare is empty")
+        cli::cli_alert_info("$replace_value_where (shintodb) ignored because val_compare is empty")
         return(FALSE)
       }
 
@@ -497,7 +498,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     table_info = function(table){
 
       if(self$dbtype == "sqlite"){
-        message("Not supported for SQLite")
+        cli::cli_alert_info("$table_info Not supported for SQLite")
         return(NA)
       }
 
