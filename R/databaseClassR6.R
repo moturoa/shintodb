@@ -289,7 +289,7 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
 
       self$read_table(table, lazy = TRUE) |>
         dplyr::filter(...) |>
-        dbplyr::collect()
+        dplyr::collect()
 
     },
 
