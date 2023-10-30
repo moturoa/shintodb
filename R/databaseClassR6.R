@@ -261,7 +261,10 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
     read_table = function(table, lazy = FALSE, exclude_columns = NULL){
 
       if(!is.null(self$schema)){
-        out <- dplyr::tbl(self$con,  dbplyr::in_schema(self$schema, table))
+
+        # check_from=FALSE: otherwise we get a warning that we did not use in_schema,
+        # but we obviously do; this is a new bug in dbplyr which checks in the wrong way
+        out <- dplyr::tbl(self$con,  dbplyr::in_schema(self$schema, table), check_from = FALSE)
       } else {
         out <- dplyr::tbl(self$con, table)
       }

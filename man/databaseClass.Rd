@@ -285,6 +285,15 @@ Short for \verb{read_table(table,lazy=T) |> filter() |> collect}
 \if{html}{\out{<div class="r">}}\preformatted{databaseClass$filter(table, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{table}}{Table name (without the self schema)}
+
+\item{\code{...}}{Further arguments to dplyr::filter}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-NA-append_data"></a>}}

@@ -1,7 +1,7 @@
 Package: shintodb
 Type: Package
 Title: Tools for Shinto DB Connections, Config Management
-Version: 1.0.2
+Version: 1.0.3
 Author: Remko Duursma
 Maintainer: Remko Duursma <remko@shintolabs.nl>
 Description: Everything to work with PostgresDB in Shinto apps.
