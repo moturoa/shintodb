@@ -25,4 +25,4 @@ For an entry in your config.yml named 'data_entry', to connect with default sche
 
 ## Contact
 
-Remko Duursma
+Wesley Brants
