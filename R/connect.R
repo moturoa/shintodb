@@ -34,7 +34,7 @@ connect <- function(what,
                       file = file)
 
   if(localized){
-    conf$dbport <- get_user_local_port("p2")
+    conf$dbport <- get_user_local_port("p3")
     conf$dbhost <- "localhost"
   }
 

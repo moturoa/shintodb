@@ -1,7 +1,7 @@
 #' Adds an entry to a DB config.yml file
 #' @description Manage your DB config file with ease. Adds one or more config blocks,
 #' in default, development, or production (or default+development at the same time since
-#' they are both for the dev2 postgres server). Prompts to enter the password.
+#' they are both for the dev3 postgres server). Prompts to enter the password.
 #' The password is not yet encrypted - working on it.
 #' @details A shinto config file (as of 2022) is a YAML (typically `conf/config.yml`) contains postgres
 #' database connection details including passwords. An entry looks like:
@@ -12,7 +12,7 @@
 #'     dbname: "wbm_eindhoven"
 #'     dbhost: "127.0.0.1"
 #'     dbport: 2222
-#'     dbuser: "wbm_eindhoven@postgres-dev2"
+#'     dbuser: "wbm_eindhoven"
 #'     dbpassword: "<<PASSWORD>>"
 #' }
 #'
@@ -24,7 +24,7 @@
 #'
 #' A connection can then be made with `shintobag::shinto_db_connection("Eindhoven")`.
 #'
-#' The port used in local forwarding is read from the environment variable `SHINTO_DEV2_LOCAL_PORT`.
+#' The port used in local forwarding is read from the environment variable `SHINTO_DEV3_LOCAL_PORT`.
 #' Or, a menu appears where you can enter it (but it is not remembered).
 #'
 #' A config file consists of three blocks: default, development and production. Which block
@@ -64,7 +64,7 @@ add_config_entry <- function(name, dbname,  dbuser = dbname,
 
     if(!has_config_entry(name, "development", conf)){
 
-      lis_default <- db_entry_list(name, dbname, dbuser, infra = "dev2",
+      lis_default <- db_entry_list(name, dbname, dbuser, infra = "dev3",
                                    local = TRUE, encrypt = encrypt)
 
       # pressed cancel
@@ -73,13 +73,13 @@ add_config_entry <- function(name, dbname,  dbuser = dbname,
         return(invisible(NULL))
       }
 
-      lis_dev2 <- db_entry_list(name, dbname, dbuser, infra = "dev2", local = FALSE,
+      lis_dev3 <- db_entry_list(name, dbname, dbuser, infra = "dev3", local = FALSE,
                                 encrypt = FALSE,  # <- already encrypted in previous list (or not)
                                 password = lis_default[[1]]$dbpassword)
 
 
       conf$default <- c(conf$default, lis_default)
-      conf$development <- c(conf$development, lis_dev2)
+      conf$development <- c(conf$development, lis_dev3)
     } else {
       cli::cli_alert_info("shintodb::add_config_entry() : Config entry already in config file; skipped")
     }
@@ -89,7 +89,7 @@ add_config_entry <- function(name, dbname,  dbuser = dbname,
     if(!has_config_entry(name, where, conf)){
 
       if(where == "production"){
-        infra <- "p2"
+        infra <- "p3"
       } else {
         infra <- where
       }
@@ -195,7 +195,10 @@ db_entry_list <- function(name, dbname, dbuser = dbname, infra,
         dbname = dbname,
         dbhost = get_host(infra, local),
         dbport = get_port(infra, local),
-        dbuser = get_dbuser(dbuser, infra, local),
+        dbuser = dbuser,
+        #old method; for when still @.... was needed behind the dbuser
+        #kept for one more cycle to be sure, can be deleted after 2024-06-01
+        #dbuser = get_dbuser(dbuser, infra, local),
         dbpassword = password
       )
     ), name)
@@ -206,35 +209,34 @@ db_entry_list <- function(name, dbname, dbuser = dbname, infra,
 
 
 #---- Unexported utils
-get_user_local_port <- function(infra = c("dev2","p2")){
+get_user_local_port <- function(infra = c("dev3","p3")){
 
   infra <- match.arg(infra)
 
 
-  if(infra == "dev2"){
-    dev2_port <- Sys.getenv("SHINTO_DEV2_LOCAL_PORT")
+  if(infra == "dev3"){
+    dev3_port <- Sys.getenv("SHINTO_DEV3_LOCAL_PORT")
 
-    if(dev2_port == ""){
-      dev2_port <- rstudioapi::showPrompt("Portforwarding : dev2",
-                                          "Welke port gebruik je voor lokaal forwarden naar postgres-dev2? Gebruik SHINTO_DEV2_LOCAL_PORT env. var. om dit menu niet te zien"
+    if(dev3_port == ""){
+      dev3_port <- rstudioapi::showPrompt("Portforwarding : dev3",
+                                          "Welke port gebruik je voor lokaal forwarden naar postgres-dev3? Gebruik SHINTO_DEV3_LOCAL_PORT env. var. om dit menu niet te zien"
       )
     }
 
-    return(as.integer(dev2_port))
+    return(as.integer(dev3_port))
   }
 
-  # Alleen Remko kan dit
-  if(infra == "p2"){
+  if(infra == "p3"){
 
-    p2_port <- Sys.getenv("SHINTO_P2_LOCAL_PORT")
+    p3_port <- Sys.getenv("SHINTO_P3_LOCAL_PORT")
 
-    if(p2_port == ""){
-      p2_port <- rstudioapi::showPrompt("Portforwarding : p2",
-                                        "Welke port gebruik je voor lokaal forwarden naar postgres-p2? Gebruik SHINTO_P2_LOCAL_PORT env. var. om dit menu niet te zien"
+    if(p3_port == ""){
+      p3_port <- rstudioapi::showPrompt("Portforwarding : p3",
+                                        "Welke port gebruik je voor lokaal forwarden naar postgres-p3? Gebruik SHINTO_P3_LOCAL_PORT env. var. om dit menu niet te zien"
       )
     }
 
-    return(as.integer(p2_port))
+    return(as.integer(p3_port))
   }
 
 }
@@ -243,14 +245,14 @@ get_user_local_port <- function(infra = c("dev2","p2")){
 get_port <- function(infra, local = FALSE){
 
   if(!local){
-    5432L   # postgres default (integer!)
+    6432L   # postgres default (integer!)
   } else {
     get_user_local_port(infra)
   }
 
 }
 
-get_host <- function(infra = c("dev2","p2","eindhoven_premium"), local = FALSE){
+get_host <- function(infra = c("dev3","p3","eindhoven_premium"), local = FALSE){
 
   infra <- match.arg(infra)
 
@@ -266,12 +268,14 @@ get_host <- function(infra = c("dev2","p2","eindhoven_premium"), local = FALSE){
 
 }
 
-get_dbuser <- function(dbuser, infra, local){
-
-  # local=FALSE omdat de db user altijd de azure host heeft (dus niet @localhost)
-  paste0(dbuser, "@", get_host(infra, local = FALSE))
-
-}
+## decrepated
+#kept for one more cycle to be sure, can be deleted after 2024-06-01
+# get_dbuser <- function(dbuser, infra, local){
+#
+#   # local=FALSE omdat de db user altijd de azure host heeft (dus niet @localhost)
+#   paste0(dbuser, "@", get_host(infra, local = FALSE))
+#
+# }
 
 
 
