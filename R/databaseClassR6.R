@@ -238,24 +238,6 @@ databaseClass <- R6::R6Class(lock_objects = FALSE,
       out$exists
     },
     
-    #' @description Does `column` in `table` have `value`?
-    #' @param table Table name
-    #' @param column Column name
-    #' @param value Value in question
-    #' @return Logical
-    has_value = function(table, column, value){
-      
-      query <- glue::glue(
-        "SELECT EXISTS (SELECT 1
-                     FROM {self$schema}.{table}
-                     WHERE {column} = '{value}';"
-      )
-      
-      out <- self$query(query)
-      out$exists
-    },
-
-
     #' @description Add a column to a table
     #' @param table Table name
     #' @param column Column name
